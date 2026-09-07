@@ -6,7 +6,7 @@ El simulador avanza mediante ciclos de reloj discreto, emula la ejecución de pr
 
 ---
 
-## 📌 Características Principales
+##  Características Principales
 
 *   **Planificación MLFQ de 3 Niveles**:
     *   **Q0 (Prioridad Alta)**: Cola FIFO / Round Robin con quantum de **2 ciclos**.
@@ -23,7 +23,7 @@ El simulador avanza mediante ciclos de reloj discreto, emula la ejecución de pr
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 El simulador sigue un enfoque de **Arquitectura Limpia Simplificada** para separar las reglas de negocio de la infraestructura y de la entrada/salida:
 
@@ -54,7 +54,7 @@ El simulador sigue un enfoque de **Arquitectura Limpia Simplificada** para separ
 
 ---
 
-## 🧩 Principios de Diseño Aplicados (SOLID & Co.)
+##  Principios de Diseño Aplicados (SOLID & Co.)
 
 *   **SRP (Single Responsibility Principle)**: Cada clase tiene una única e inequívoca responsabilidad. Por ejemplo, el motor de simulación (`MlfqEngine`) coordina el reloj y los estados del proceso, mientras que las métricas se calculan mediante funciones puras separadas en `Metrics.h` y la serialización reside en `CsvWriter.h`.
 *   **OCP (Open/Closed Principle)**: Añadir un nuevo nivel de cola es tan simple como agregar un valor al vector en `MlfqConfig` sin modificar el motor del scheduler. Si se desea cambiar la lógica de selección de procesos por FCFS o Round Robin puro, solo es necesario inyectar una nueva implementación de `ISchedulingPolicy` sin alterar el código de `MlfqEngine`.
@@ -64,7 +64,7 @@ El simulador sigue un enfoque de **Arquitectura Limpia Simplificada** para separ
 
 ---
 
-## 🎨 Patrones de Diseño Implementados
+##  Patrones de Diseño Implementados
 
 *   **Strategy Pattern (`ISchedulingPolicy`)**: Encapsula el criterio de selección del proceso a planificar de manera modular. Esto permite intercambiar políticas de planificación sin tocar la lógica de simulación, algo clave para el OCP y la experimentación académica.
 *   **Factory Pattern (`ProcessFactory`)**: Centraliza la carga y validación de los procesos de simulación desde dos canales de entrada (un escenario de prueba por defecto cableado y un cargador dinámico de CSV). Además, realiza la validación robusta de datos (como bursts negativos, archivos faltantes o columnas corruptas), lanzando excepciones limpias de tipo `std::runtime_error`.
@@ -72,7 +72,7 @@ El simulador sigue un enfoque de **Arquitectura Limpia Simplificada** para separ
 
 ---
 
-## 🛠️ Guía de Uso del Proyecto
+## Guía de Uso del Proyecto
 
 ### Requisitos Previos
 *   Compilador compatible con **C++17** (ej. `g++` v7 o superior).
@@ -108,7 +108,7 @@ El proyecto incluye un `Makefile` parametrizado para facilitar las tareas de des
 
 ---
 
-## 🚀 Ejemplos de Ejecución
+##  Ejemplos de Ejecución
 
 ### 1. Escenario por Defecto (Estatico)
 Si ejecutas el simulador sin argumentos:
@@ -145,7 +145,7 @@ P3,4,4
 
 ---
 
-## 🧪 Pruebas Unitarias
+##  Pruebas Unitarias
 
 El simulador incorpora pruebas automatizadas dentro del archivo `tests/test_main.cpp` bajo un micro-framework interno (`testfw.h`), validando escenarios de comportamiento críticos:
 
@@ -157,7 +157,7 @@ El simulador incorpora pruebas automatizadas dentro del archivo `tests/test_main
 
 ---
 
-## 📊 Análisis Técnico y Preguntas del Laboratorio
+##  Análisis Técnico y Preguntas del Laboratorio
 
 ### 1. ¿Qué ocurre si el boost es muy frecuente?
 Si el *Priority Boost* ocurre de manera demasiado frecuente (por ejemplo, cada 2-3 ciclos), **el algoritmo MLFQ degenera hacia un Round Robin puro** sobre la cola de máxima prioridad (Q0). Los procesos no tienen el tiempo suficiente para descender de nivel y ser diferenciados según su comportamiento de E/S o uso de CPU. Se pierde la memoria histórica de consumo del planificador, provocando que procesos de uso intensivo de CPU compitan en igualdad de condiciones con los procesos interactivos, perdiendo el beneficio de interactividad y aumentando el costo de sobrecarga por excesivos re-encolados y cambios de contexto.
@@ -175,7 +175,7 @@ Un quantum muy pequeño en Q0 (por ejemplo, 1 ciclo) **mejora drásticamente el 
 
 ---
 
-## 📂 Estructura de Directorios
+##  Estructura de Directorios
 
 ```text
 .
