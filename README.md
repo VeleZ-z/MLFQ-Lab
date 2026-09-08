@@ -12,8 +12,8 @@ El simulador avanza mediante ciclos de reloj discreto, emula la ejecución de pr
     *   **Q0 (Prioridad Alta)**: Cola FIFO / Round Robin con quantum de **2 ciclos**.
     *   **Q1 (Prioridad Media)**: Cola FIFO / Round Robin con quantum de **4 ciclos**.
     *   **Q2 (Prioridad Baja)**: Cola FIFO / Round Robin con quantum de **8 ciclos**.
-*   **Conservación de CPU (Preempción Justa)**: Un proceso en ejecución conserva la CPU hasta completar su quantum o finalizar su ráfaga, respetando la semántica de interrupción por temporizador.
-*   **Mecanismo de Democión Condicional**: Los procesos solo bajan de nivel de prioridad si consumen la totalidad de su quantum asignado. Si terminan antes, no sufren democión.
+*   **Conservación de CPU (Preempción Justa)**: Un proceso en ejecución conserva la CPU hasta completar su quantum o finalizar su Burst Time.
+*   **Mecanismo de Democión Condicional**: Los procesos solo bajan de nivel de prioridad si consumen la totalidad de su quantum asignado.
 *   **Priority Boost Periódico**: Cada intervalo configurable (por defecto cada $S = 20$ ciclos), todos los procesos son retornados a la cola de máxima prioridad (Q0) de manera determinista (por PID) para evitar inanición.
 *   **Cálculo Automático de Métricas**:
     *   **Response Time**: Tiempo transcurrido desde la llegada hasta la primera ejecución.
@@ -25,26 +25,7 @@ El simulador avanza mediante ciclos de reloj discreto, emula la ejecución de pr
 
 ## Arquitectura del Sistema
 
-El simulador sigue un enfoque de **Arquitectura Limpia Simplificada** para separar las reglas de negocio de la infraestructura y de la entrada/salida:
 
-```text
-+-------------------------------------------------------------+
-|                 src/main.cpp (Aplicación)                   |
-|   - Orquestación y cableado (wiring)                        |
-|   - Manejo global de excepciones de nivel aplicación        |
-+---------------------+---------------------------------------+
-                      |
-                      v depende de
-+------------------------------------+   +----------------------------+
-|      include/infrastructure        |   |       include/domain       |
-|                                    |   |                            |
-|   - ProcessFactory (CSV/Default)  |-->|   - Process & Queue        |
-|   - CsvWriter (results.csv)        |   |   - MlfqEngine & MlfqPolicy|
-|                                    |   |   - Metrics & MlfqConfig   |
-+------------------------------------+   +----------------------------+
-  Ambas consumen/producen entidades
-  del dominio (Process)
-```
 
 ### Capas del Proyecto
 
@@ -82,6 +63,12 @@ El simulador sigue un enfoque de **Arquitectura Limpia Simplificada** para separ
 
 El proyecto incluye un `Makefile` parametrizado para facilitar las tareas de desarrollo y compilación:
 
+*   **Limpiar el entorno**:
+    ```bash
+    make clean
+    ```
+    Elimina los archivos de compilación, objetos, ejecutables (`mlfq`, `unittest`) y el reporte `results.csv`.
+
 *   **Compilar el simulador**:
     ```bash
     make
@@ -94,17 +81,17 @@ El proyecto incluye un `Makefile` parametrizado para facilitar las tareas de des
     ```
     Compila el proyecto y ejecuta la simulación con el escenario predefinido del enunciado del laboratorio.
 
+*   **Ejecutar el escenario especifico con archivo csv propio**:
+    ```bash
+    ./mlfq mis_procesos.csv
+    ```
+    Compila primero con `make` si aún no lo has hecho, y luego ejecuta el binario pasándole la ruta de tu archivo como argumento. El archivo debe tener el formato `PID,Arrival,Burst` (una línea por proceso, con saltos de línea reales, sin encabezado ni la letra "P" en el PID, por ejemplo `1,0,10`).
+
 *   **Ejecutar pruebas unitarias**:
     ```bash
     make test
     ```
     Compila y ejecuta la batería de pruebas automatizadas mediante el framework mínimo interno (`unittest`).
-
-*   **Limpiar el entorno**:
-    ```bash
-    make clean
-    ```
-    Elimina los archivos de compilación, objetos, ejecutables (`mlfq`, `unittest`) y el reporte `results.csv`.
 
 ---
 
@@ -126,8 +113,8 @@ Se procesará la carga predefinida del laboratorio:
 Simulacion completada. Resultados exportados a results.csv
 Promedios:
  Response: 1.5
- Turnaround: 15.5
- Waiting: 9
+ Turnaround: 19.5
+ Waiting: 13
 ```
 
 ### 2. Carga de Trabajo Personalizada desde CSV
@@ -136,11 +123,11 @@ Puedes proveer tu propio set de datos en un archivo CSV estructurado con las col
 ./mlfq mi_carga_de_procesos.csv
 ```
 
-**Formato recomendado de entrada (`procesos.csv`):**
+**Formato recomendado de entrada (`mis_procesos.csv`):**
 ```csv
-P1,0,10
-P2,2,6
-P3,4,4
+1,0,10
+2,2,6
+3,4,4
 ```
 
 ---
