@@ -1,5 +1,9 @@
 # Simulador de Planificador MLFQ (Multi-Level Feedback Queue)
 
+**Integrantes:** Juan Camilo Vélez Chaverra · Aldo Camera Pérez · Juan Manuel Velásquez Castañeda
+
+**Curso:** Sistemas Operativos — Laboratorio Final Unidad 1
+
 Este proyecto implementa un simulador de planificador de procesos basado en la política **Multi-Level Feedback Queue (MLFQ)** desarrollado en **C++17**. Diseñado bajo principios de **Arquitectura Limpia**, **SOLID** y patrones de diseño de software para garantizar un código modular, mantenible, extensible y testeable.
 
 El simulador avanza mediante ciclos de reloj discreto, emula la ejecución de procesos bajo 3 niveles de prioridad con quantums diferenciados, realiza descensos de prioridad (*demotion*), ejecuta reajustes periódicos (*priority boost*) para evitar inanición (*starvation*), calcula métricas clave y exporta los resultados en un formato estándar CSV (`results.csv`).
