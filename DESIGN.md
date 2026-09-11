@@ -17,20 +17,8 @@ make clean
 
 ## Estructura y capas (arquitectura limpia simplificada)
 
-```
-+-------------------------------------------------------------+
-| src/main.cpp          (entrada: CLI, wiring, manejo de      |
-|                        errores de nivel aplicacion)         |
-+-------------------+-----------------------------------------+
-                    | depende de
-        +-----------v------------+      +----------------------+
-        |  include/infrastructure |      |  include/domain      |
-        |  ProcessFactory (CSV)   |      |  Process, Queue,     |
-        |  CsvWriter (resultados) |      |  MlfqEngine, Metrics |
-        +-----------+------------+      |  MlfqPolicy, Config  |
-                    |                   +----------^-----------+
-                    +------ ambas producen/consumen Process (dominio)
-```
+<img width="583" height="1101" alt="Diagrama de capas dependencias" src="https://github.com/user-attachments/assets/355dc31b-18b1-43e1-8b2e-b901d97dd107" />
+
 
 - **Dominio** (`include/domain`, `src/domain`): entidades y reglas del
   scheduler. **No importa nada de infraestructura** ni de la STL de
